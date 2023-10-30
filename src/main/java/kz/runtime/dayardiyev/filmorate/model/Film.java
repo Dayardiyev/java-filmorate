@@ -2,7 +2,6 @@ package kz.runtime.dayardiyev.filmorate.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NonNull;
 
 import java.time.LocalDate;
 
