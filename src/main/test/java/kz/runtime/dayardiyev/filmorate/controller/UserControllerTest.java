@@ -21,7 +21,7 @@ public class UserControllerTest {
     User userToTest;
 
     @BeforeAll
-    public static void initController(){
+    public static void initController() {
         userController = new UserController();
     }
 

@@ -21,12 +21,13 @@ public class FilmControllerTest {
     Film filmToTest;
 
     @BeforeAll
-    public static void initController(){
+    public static void initController() {
         controller = new FilmController();
 
     }
+
     @BeforeEach
-    public void init(){
+    public void init() {
         filmToTest = new Film(
                 1,
                 "film_name",
@@ -38,35 +39,35 @@ public class FilmControllerTest {
 
 
     @Test
-    public void createUserTest(){
+    public void createUserTest() {
         ResponseEntity<Object> result = controller.createFilm(filmToTest);
         assertEquals(result.getBody(), filmToTest);
     }
 
 
     @Test
-    public void createUserTestWrongLogin(){
+    public void createUserTestWrongLogin() {
         filmToTest.setName(" ");
         ResponseEntity<Object> result = controller.createFilm(filmToTest);
         assertEquals(result.getStatusCode(), HttpStatus.BAD_REQUEST);
     }
 
     @Test
-    public void createUserTestWrongDescription(){
+    public void createUserTestWrongDescription() {
         filmToTest.setDescription("*".repeat(203));
         ResponseEntity<Object> result = controller.createFilm(filmToTest);
         assertEquals(result.getStatusCode(), HttpStatus.BAD_REQUEST);
     }
 
     @Test
-    public void createUserTestWrongReleaseDate(){
+    public void createUserTestWrongReleaseDate() {
         filmToTest.setReleaseDate(LocalDate.of(1895, 12, 27));
         ResponseEntity<Object> result = controller.createFilm(filmToTest);
         assertEquals(result.getStatusCode(), HttpStatus.BAD_REQUEST);
     }
 
     @Test
-    public void createUserTestWrongDuration(){
+    public void createUserTestWrongDuration() {
         filmToTest.setDuration(-1);
         ResponseEntity<Object> result = controller.createFilm(filmToTest);
         assertEquals(result.getStatusCode(), HttpStatus.BAD_REQUEST);
