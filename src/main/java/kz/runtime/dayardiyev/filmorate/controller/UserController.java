@@ -27,7 +27,7 @@ public class UserController {
             return ResponseEntity.ok(validatedUser);
         } catch (UserValidateException e) {
             log.warn(e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(user);
         }
     }
 
@@ -40,7 +40,7 @@ public class UserController {
             return ResponseEntity.ok(validatedUser);
         } catch (UserValidateException e) {
             log.warn(e.getMessage());
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(user);
         }
     }
 

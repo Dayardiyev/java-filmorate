@@ -28,7 +28,7 @@ public class FilmController {
             return ResponseEntity.status(HttpStatus.CREATED).body(validatedFilm);
         } catch (FilmValidateException e) {
             log.warn(e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(film);
         }
     }
 
@@ -41,7 +41,7 @@ public class FilmController {
             return ResponseEntity.status(HttpStatus.OK).body(validatedFilm);
         } catch (FilmValidateException e) {
             log.warn(e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(film);
         }
     }
 

@@ -1,10 +1,12 @@
 package kz.runtime.dayardiyev.filmorate.service;
 
+import kz.runtime.dayardiyev.filmorate.exception.NotFoundByIdException;
 import kz.runtime.dayardiyev.filmorate.exception.UserValidateException;
 import kz.runtime.dayardiyev.filmorate.model.User;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class UserService {
@@ -12,15 +14,13 @@ public class UserService {
 
     public void update(List<User> users, User target) {
         Optional<User> optionalUser = users.stream()
-                .filter(user -> user.getId() == target.getId())
+                .filter(user -> Objects.equals(user.getId(), target.getId()))
                 .findFirst();
 
-        if (optionalUser.isPresent()) {
-            int index = users.indexOf(optionalUser.get());
-            users.set(index, target);
-        } else {
-            users.add(target);
-        }
+        int index = users.indexOf(optionalUser.orElseThrow(
+                () -> new NotFoundByIdException(String.format("Пользователь с id=%d не найден", target.getId()))
+        ));
+        users.set(index, target);
     }
 
     public User validate(User user) {
@@ -62,8 +62,8 @@ public class UserService {
     }
 
     private void setId(User user){
-        if (user.getId() == null){
-            user.setId(1L);
+        if (user.getId() == 0){
+            user.setId(uniqueId());
         }
     }
 
