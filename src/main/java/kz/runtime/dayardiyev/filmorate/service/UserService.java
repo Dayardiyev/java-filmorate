@@ -61,13 +61,13 @@ public class UserService {
         }
     }
 
-    private void setId(User user){
-        if (user.getId() == 0){
+    private void setId(User user) {
+        if (user.getId() == 0) {
             user.setId(uniqueId());
         }
     }
 
-    private long uniqueId(){
+    private long uniqueId() {
         return serial++;
     }
 }
