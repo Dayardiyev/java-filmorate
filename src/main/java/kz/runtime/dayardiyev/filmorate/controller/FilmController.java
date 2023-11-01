@@ -51,11 +51,3 @@ public class FilmController {
         return films;
     }
 }
-
-//{
-//    "id": 1,
-//    "name": "TestFilm",
-//    "description": "",
-//    "releaseDate": "2022-02-02",
-//    "duration": "PT3H10M"
-//}
