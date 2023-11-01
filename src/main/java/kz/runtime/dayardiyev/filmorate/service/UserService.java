@@ -34,14 +34,17 @@ public class UserService {
 
     private void validateEmail(User user) {
         String email = user.getEmail();
-        if (email == null || email.isBlank() || !email.contains("@")) {
+        if (email == null) {
+            throw new UserValidateException("Электронная почта не может быть пустой и должна содержать символ @");
+        }
+        if (email.isBlank() || !email.contains("@")) {
             throw new UserValidateException("Электронная почта не может быть пустой и должна содержать символ @");
         }
     }
 
     private void validateLogin(User user) {
         String login = user.getLogin();
-        if (login == null || login.isBlank() || login.contains(" ")) {
+        if (login.isBlank() || login.contains(" ")) {
             throw new UserValidateException("Логин не может быть пустым и содержать пробелы");
         }
     }
@@ -58,13 +61,13 @@ public class UserService {
         }
     }
 
-    private void setId(User user) {
-        if (user.getId() == 0) {
+    private void setId(User user){
+        if (user.getId() == 0){
             user.setId(uniqueId());
         }
     }
 
-    private long uniqueId() {
+    private long uniqueId(){
         return serial++;
     }
 }

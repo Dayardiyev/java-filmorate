@@ -24,7 +24,7 @@ public class UserController {
             User validatedUser = userService.validate(user);
             users.add(validatedUser);
             log.info("Пользователь успешно был создан");
-            return ResponseEntity.status(HttpStatus.CREATED).body(validatedUser);
+            return ResponseEntity.ok(validatedUser);
         } catch (UserValidateException e) {
             log.warn(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(user);
@@ -37,16 +37,16 @@ public class UserController {
             User validatedUser = userService.validate(user);
             userService.update(users, user);
             log.info("Пользователь успешно был обновлен!");
-            return ResponseEntity.status(HttpStatus.OK).body(validatedUser);
+            return ResponseEntity.ok(validatedUser);
         } catch (UserValidateException e) {
             log.warn(e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(user);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(user);
         }
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> findAll() {
+    public List<User> findAll() {
         log.info("Просмотрен список пользователей");
-        return ResponseEntity.ok(users);
+        return users;
     }
 }

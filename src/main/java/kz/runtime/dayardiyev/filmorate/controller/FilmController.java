@@ -41,7 +41,7 @@ public class FilmController {
             return ResponseEntity.status(HttpStatus.OK).body(validatedFilm);
         } catch (FilmValidateException e) {
             log.warn(e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(film);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(film);
         }
     }
 
@@ -51,3 +51,11 @@ public class FilmController {
         return films;
     }
 }
+
+//{
+//    "id": 1,
+//    "name": "TestFilm",
+//    "description": "",
+//    "releaseDate": "2022-02-02",
+//    "duration": "PT3H10M"
+//}
