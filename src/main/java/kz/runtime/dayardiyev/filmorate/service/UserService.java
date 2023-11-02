@@ -34,10 +34,7 @@ public class UserService {
 
     private void validateEmail(User user) {
         String email = user.getEmail();
-        if (email == null) {
-            throw new UserValidateException("Электронная почта не может быть пустой и должна содержать символ @");
-        }
-        if (email.isBlank() || !email.contains("@")) {
+        if (email == null || email.isBlank() || !email.contains("@")) {
             throw new UserValidateException("Электронная почта не может быть пустой и должна содержать символ @");
         }
     }
