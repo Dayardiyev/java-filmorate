@@ -3,32 +3,54 @@ package kz.runtime.dayardiyev.filmorate.service;
 import kz.runtime.dayardiyev.filmorate.exception.FilmValidateException;
 import kz.runtime.dayardiyev.filmorate.exception.NotFoundByIdException;
 import kz.runtime.dayardiyev.filmorate.model.Film;
+import kz.runtime.dayardiyev.filmorate.storage.InMemoryFilmStorage;
+import kz.runtime.dayardiyev.filmorate.storage.InMemoryUserStorage;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.Set;
 
-public class FilmService {
-    private long serial = 1;
 
-    public void update(List<Film> films, Film target) {
-        Optional<Film> optionalFilm = films.stream()
-                .filter(film -> Objects.equals(film.getId(), target.getId()))
-                .findFirst();
+@Slf4j
+@Service
+public class FilmService extends AbstractService<Film, InMemoryFilmStorage> {
 
-        int index = films.indexOf(optionalFilm.orElseThrow(
-                () -> new NotFoundByIdException(String.format("Фильм с id=%d не найден", target.getId()))
-        ));
-        films.set(index, target);
+    private final InMemoryUserStorage userStorage;
+
+    @Autowired
+    public FilmService(InMemoryFilmStorage storage, InMemoryUserStorage userStorage) {
+        super(storage);
+        this.userStorage = userStorage;
     }
 
+    public void addLike(long id, long userId) {
+        if (userStorage.contains(userId)) {
+            storage.addLike(id, userId);
+        } else {
+            throw new NotFoundByIdException("");
+        }
+    }
+
+    public void removeLike(long id, long userId) {
+        if (storage.contains(id) && userStorage.contains(id)) {
+            storage.removeLike(id, userId);
+            return;
+        }
+        throw new NotFoundByIdException("Сущность не найден по id");
+    }
+
+    public Set<Film> getFilmsByCount(Integer count) {
+        return storage.getFilmsByCount(count);
+    }
+
+    @Override
     public Film validate(Film film) {
         validateName(film);
         validateDescription(film);
         validateReleaseDate(film);
         validateDuration(film);
-        setId(film);
         return film;
     }
 
@@ -59,13 +81,4 @@ public class FilmService {
         }
     }
 
-    private void setId(Film film) {
-        if (film.getId() == 0) {
-            film.setId(uniqueId());
-        }
-    }
-
-    private long uniqueId() {
-        return serial++;
-    }
 }
