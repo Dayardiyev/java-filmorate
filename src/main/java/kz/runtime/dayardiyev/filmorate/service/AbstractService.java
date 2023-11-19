@@ -29,7 +29,7 @@ public abstract class AbstractService<T extends AbstractModel, S extends Abstrac
         throw new NotFoundByIdException(entity.getClass().getSimpleName() + " с id " + id + " не найден");
     }
 
-    public List<T> findAll(){
+    public List<T> findAll() {
         return storage.findAll();
     }
 

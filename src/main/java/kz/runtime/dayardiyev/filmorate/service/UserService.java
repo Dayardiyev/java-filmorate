@@ -27,8 +27,8 @@ public class UserService extends AbstractService<User, InMemoryUserStorage> {
         return user;
     }
 
-    public void addFriend(long id, long friendId){
-        if (storage.contains(id) && storage.contains(friendId)){
+    public void addFriend(long id, long friendId) {
+        if (storage.contains(id) && storage.contains(friendId)) {
             storage.addFriend(id, friendId);
             return;
         }
@@ -36,7 +36,7 @@ public class UserService extends AbstractService<User, InMemoryUserStorage> {
     }
 
     public void deleteFriend(long id, long friendId) {
-        if (storage.contains(id) && storage.contains(friendId)){
+        if (storage.contains(id) && storage.contains(friendId)) {
             storage.deleteFriend(id, friendId);
             return;
         }

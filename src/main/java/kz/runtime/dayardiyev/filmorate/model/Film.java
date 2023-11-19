@@ -16,11 +16,11 @@ public class Film extends AbstractModel {
     private int duration;
     private Set<Long> likes = new HashSet<>();
 
-    public void addLike(long id){
+    public void addLike(long id) {
         likes.add(id);
     }
 
-    public void removeLike(long id){
+    public void removeLike(long id) {
         likes.add(id);
     }
 }
