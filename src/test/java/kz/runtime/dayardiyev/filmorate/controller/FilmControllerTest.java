@@ -3,6 +3,9 @@ package kz.runtime.dayardiyev.filmorate.controller;
 
 import kz.runtime.dayardiyev.filmorate.exception.FilmValidateException;
 import kz.runtime.dayardiyev.filmorate.model.Film;
+import kz.runtime.dayardiyev.filmorate.service.FilmService;
+import kz.runtime.dayardiyev.filmorate.storage.InMemoryFilmStorage;
+import kz.runtime.dayardiyev.filmorate.storage.InMemoryUserStorage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,7 +23,9 @@ public class FilmControllerTest {
 
     @BeforeEach
     public void init() {
-        controller = new FilmController();
+        InMemoryUserStorage userStorage = new InMemoryUserStorage();
+        InMemoryFilmStorage filmStorage = new InMemoryFilmStorage(userStorage);
+        controller = new FilmController(new FilmService(filmStorage, userStorage));
         filmToTest = new Film(1, "film_name", "", LocalDate.of(2000, 1, 1), 120);
     }
 

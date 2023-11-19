@@ -16,6 +16,14 @@ public class User extends AbstractModel {
     private LocalDate birthday;
     private Set<Long> friends = new TreeSet<>(Long::compare);
 
+    public User(long id, String email, String login, String name, LocalDate birthday) {
+        this.id = id;
+        this.email = email;
+        this.login = login;
+        this.name = name;
+        this.birthday = birthday;
+    }
+
     public void addFriend(long id) {
         friends.add(id);
     }

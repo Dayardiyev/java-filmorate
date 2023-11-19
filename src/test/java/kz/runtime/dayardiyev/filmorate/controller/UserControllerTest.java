@@ -2,6 +2,8 @@ package kz.runtime.dayardiyev.filmorate.controller;
 
 import kz.runtime.dayardiyev.filmorate.exception.UserValidateException;
 import kz.runtime.dayardiyev.filmorate.model.User;
+import kz.runtime.dayardiyev.filmorate.service.UserService;
+import kz.runtime.dayardiyev.filmorate.storage.InMemoryUserStorage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,7 +22,7 @@ public class UserControllerTest {
 
     @BeforeEach
     public void init() {
-        userController = new UserController();
+        userController = new UserController(new UserService(new InMemoryUserStorage()));
         userToTest = new User(1, "example@mail.com", "user_login", "user_name", LocalDate.of(2000, 1, 1));
     }
 
