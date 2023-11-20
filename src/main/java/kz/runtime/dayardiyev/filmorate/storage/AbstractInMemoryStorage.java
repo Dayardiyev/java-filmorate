@@ -14,12 +14,13 @@ public abstract class AbstractInMemoryStorage<T extends AbstractModel> implement
 
     @Getter
     protected final Map<Long, T> entities;
+
     private final String className;
     private long serial;
 
-    public AbstractInMemoryStorage(Class<T> entityClass) {
+    public AbstractInMemoryStorage(String className) {
         this.entities = new HashMap<>();
-        this.className = entityClass.getSimpleName();
+        this.className = className;
         serial = 1;
     }
 
