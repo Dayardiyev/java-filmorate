@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public class InMemoryUserStorage extends AbstractInMemoryStorage<User> implements UserStorage {
 
     public InMemoryUserStorage() {
-        super("User");
+        super();
     }
 
     @Override
