@@ -19,7 +19,6 @@ public class InMemoryFilmStorage extends AbstractInMemoryStorage<Film> implement
 
     @Autowired
     public InMemoryFilmStorage(InMemoryUserStorage userStorage) {
-        super();
         this.userStorage = userStorage;
     }
 

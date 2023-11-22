@@ -11,10 +11,6 @@ import java.util.stream.Collectors;
 @Component
 public class InMemoryUserStorage extends AbstractInMemoryStorage<User> implements UserStorage {
 
-    public InMemoryUserStorage() {
-        super();
-    }
-
     @Override
     public void addFriend(long id, long friendId) {
         entities.get(id).addFriend(friendId);
