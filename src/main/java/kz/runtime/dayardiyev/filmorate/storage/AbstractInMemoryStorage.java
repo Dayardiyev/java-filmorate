@@ -27,6 +27,7 @@ public abstract class AbstractInMemoryStorage<T extends AbstractModel> implement
         return entity;
     }
 
+
     public List<T> findAll() {
         Collection<T> values = entities.values();
 

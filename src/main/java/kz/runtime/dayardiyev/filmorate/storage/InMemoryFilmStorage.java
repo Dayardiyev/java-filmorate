@@ -17,6 +17,8 @@ public class InMemoryFilmStorage extends AbstractInMemoryStorage<Film> implement
 
     private final InMemoryUserStorage userStorage;
 
+    // Внедрение зависимости InMemoryUserStorage,
+    // чтобы иметь возможность проверить наличие пользователя в хранилище
     @Autowired
     public InMemoryFilmStorage(InMemoryUserStorage userStorage) {
         this.userStorage = userStorage;
@@ -24,22 +26,34 @@ public class InMemoryFilmStorage extends AbstractInMemoryStorage<Film> implement
 
     private static final int DEFAULT_FILM_COUNT = 10;
 
+
+    // Добавление лайка к фильму
     @Override
     public void addLike(long id, long userId) {
-        if (contains(id) && userStorage.contains(userId)) {
-            entities.get(id).addLike(userId);
-            return;
+        // Проверка наличия фильма с id в хранилище
+        if (!contains(id)) {
+            throw new NotFoundByIdException("Фильм с id " + id + " не найден");
         }
-        throw new NotFoundByIdException("Объект с переданным id не найден");
+
+        // Проверка наличия пользователя с userId в хранилище
+        if (!userStorage.contains(userId)) {
+            throw new NotFoundByIdException("Пользователь с id " + userId + " не найден");
+        }
+
+        entities.get(id).addLike(userId);
     }
 
     @Override
     public void removeLike(long id, long userId) {
-        if (contains(id) && userStorage.contains(userId)) {
-            entities.get(id).removeLike(userId);
-            return;
+        if (!contains(id)) {
+            throw new NotFoundByIdException("Фильм с id " + id + " не найден");
         }
-        throw new NotFoundByIdException("Объект с переданным id не найден");
+
+        if (!userStorage.contains(userId)) {
+            throw new NotFoundByIdException("Пользователь с id " + userId + " не найден");
+        }
+
+        entities.get(id).removeLike(userId);
     }
 
     @Override

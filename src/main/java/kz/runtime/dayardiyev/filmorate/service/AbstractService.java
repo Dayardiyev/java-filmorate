@@ -37,7 +37,7 @@ public abstract class AbstractService<T extends AbstractModel, S extends Abstrac
         if (storage.contains(id)) {
             return storage.getEntities().get(id);
         }
-        throw new NotFoundByIdException("Сущность с id " + id + " не найден");
+        throw new NotFoundByIdException("Объект с id " + id + " не найден");
     }
 
     public abstract T validate(T t);

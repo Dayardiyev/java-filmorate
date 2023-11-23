@@ -14,7 +14,10 @@ import java.util.Map;
 public class GlobalExceptionHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> handleNotFound(final NotFoundByIdException e) {
+    // Обработка исключения NotFoundByIdException
+    // Возвращает Map с ключом "errorMessage" и значением сообщения об ошибке
+    // Пример: {"errorMessage": "Фильм с id 1 не найден"}
+    public Map<String, String> handleNotFound(NotFoundByIdException e) {
         log.warn(e.getMessage());
         return Map.of("errorMessage", e.getMessage());
     }
