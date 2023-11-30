@@ -3,38 +3,51 @@ package kz.runtime.dayardiyev.filmorate.controller;
 
 import kz.runtime.dayardiyev.filmorate.model.Film;
 import kz.runtime.dayardiyev.filmorate.service.FilmService;
-import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
-@Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/films")
 public class FilmController {
-    private final List<Film> films = new ArrayList<>();
-    private final FilmService filmService = new FilmService();
+
+    private final FilmService service;
 
     @PostMapping
     public Film createFilm(@RequestBody Film film) {
-        Film validatedFilm = filmService.validate(film);
-        films.add(validatedFilm);
-        log.info("Фильм успешно был добавлен");
-        return validatedFilm;
+        return service.create(film);
     }
 
     @PutMapping
     public Film updateFilm(@RequestBody Film film) {
-        Film validatedFilm = filmService.validate(film);
-        filmService.update(films, film);
-        log.info("Фильм успешно был обновлен");
-        return validatedFilm;
+        return service.update(film);
     }
 
     @GetMapping
     public List<Film> findAll() {
-        log.info("Просмотрен список фильмов");
-        return films;
+        return service.findAll();
+    }
+
+    @GetMapping("/{id}")
+    public Film findById(@PathVariable long id) {
+        return service.getById(id);
+    }
+
+    @PutMapping("/{id}/like/{userId}")
+    public void addLike(@PathVariable long id, @PathVariable long userId) {
+        service.addLike(id, userId);
+    }
+
+    @DeleteMapping("/{id}/like/{userId}")
+    public void removeLike(@PathVariable Long id, @PathVariable Long userId) {
+        service.removeLike(id, userId);
+    }
+
+    @GetMapping("/popular")
+    public Set<Film> getFilmsByCount(@RequestParam(required = false) Integer count) {
+        return service.getFilmsByCount(count);
     }
 }
