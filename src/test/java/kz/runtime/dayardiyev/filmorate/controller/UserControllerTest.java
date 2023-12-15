@@ -28,7 +28,7 @@ public class UserControllerTest {
                 .email("example@gmail.com")
                 .login("user_login")
                 .name("user_name")
-                .birthday(LocalDate.of(2000, 2 ,2))
+                .birthday(LocalDate.of(2000, 2, 2))
                 .build();
     }
 
