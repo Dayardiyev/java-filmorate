@@ -27,7 +27,6 @@ public class UserService {
     }
 
     public User create(User user) {
-
         return storage.create(validate(user));
     }
 
@@ -35,20 +34,20 @@ public class UserService {
         return storage.update(validate(user));
     }
 
-    public void addFriend(int id, int otherId){
+    public void addFriend(int id, int otherId) {
         findById(id);
         findById(otherId);
         friendStorage.addFriend(id, otherId);
     }
 
-    public void removeFriend(int id, int otherId){
+    public void removeFriend(int id, int otherId) {
         findById(id);
         findById(otherId);
         friendStorage.removeFriend(id, otherId);
 
     }
 
-    public List<User> getAllFriends(int id){
+    public List<User> getAllFriends(int id) {
         return friendStorage.findAllFriends(id);
     }
 

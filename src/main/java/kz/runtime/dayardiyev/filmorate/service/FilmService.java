@@ -44,13 +44,13 @@ public class FilmService {
         return filmStorage.findAllPopular(count);
     }
 
-    public void addLike(int id, int userId){
+    public void addLike(int id, int userId) {
         findById(id);
         userStorage.findById(userId);
         likeStorage.addLike(id, userId);
     }
 
-    public void removeLike(int id, int userId){
+    public void removeLike(int id, int userId) {
         findById(id);
         userStorage.findById(userId);
         likeStorage.removeLike(id, userId);

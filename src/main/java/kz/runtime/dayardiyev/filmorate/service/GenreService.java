@@ -14,7 +14,7 @@ import java.util.List;
 public class GenreService {
     private final GenreStorage genreStorage;
 
-    public List<Genre> findAll(){
+    public List<Genre> findAll() {
         return genreStorage.findAll();
     }
 
