@@ -1,13 +1,13 @@
 package kz.runtime.dayardiyev.filmorate.dao;
 
 
+import kz.runtime.dayardiyev.filmorate.exception.NotFoundByIdException;
 import kz.runtime.dayardiyev.filmorate.model.Film;
 import kz.runtime.dayardiyev.filmorate.model.Mpa;
 import kz.runtime.dayardiyev.filmorate.model.Genre;
 import kz.runtime.dayardiyev.filmorate.storage.FilmStorage;
 import kz.runtime.dayardiyev.filmorate.storage.GenreStorage;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -55,7 +55,7 @@ public class FilmDbStorage implements FilmStorage {
                 film.getMpa().getId(), id);
 
         if (result == 0) {
-            throw new EmptyResultDataAccessException("not found id=" + id, 1);
+            throw new NotFoundByIdException("Фильм с id =" + id + " не найден");
         }
         updateGenres(film.getGenres(), id);
         return film;
@@ -75,7 +75,12 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Optional<Film> findById(int id) {
         String sql = "where f.id = ?";
-        return Optional.ofNullable(jdbcTemplate.queryForObject(SELECT_FILMS + sql, rowMapper(), id));
+        Film film = jdbcTemplate.queryForObject(SELECT_FILMS + sql, rowMapper(), id);
+        if (film == null) {
+            throw new NotFoundByIdException("Фильм с id =" + id + " не найден");
+        }
+        genreStorage.findAllGenresByFilm(List.of(film));
+        return Optional.of(film);
     }
 
 

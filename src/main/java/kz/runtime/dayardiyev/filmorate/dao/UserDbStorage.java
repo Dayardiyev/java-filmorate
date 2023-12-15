@@ -1,10 +1,10 @@
 package kz.runtime.dayardiyev.filmorate.dao;
 
 
+import kz.runtime.dayardiyev.filmorate.exception.NotFoundByIdException;
 import kz.runtime.dayardiyev.filmorate.model.User;
 import kz.runtime.dayardiyev.filmorate.storage.UserStorage;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -46,7 +46,7 @@ public class UserDbStorage implements UserStorage {
         String sql = "update users set email = ?, login = ?, name = ?, birthday = ? where id = ?";
         int result = jdbcTemplate.update(sql, user.getEmail(), user.getLogin(), user.getName(), Date.valueOf(user.getBirthday()), user.getId());
         if (result == 0) {
-            throw new EmptyResultDataAccessException("not found id=" + user.getId(), 1);
+            throw new NotFoundByIdException("Пользователь с id=" + user.getId() + " не найден");
         }
         return user;
     }
