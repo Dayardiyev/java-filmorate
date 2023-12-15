@@ -3,52 +3,65 @@ package kz.runtime.dayardiyev.filmorate.service;
 import kz.runtime.dayardiyev.filmorate.exception.NotFoundByIdException;
 import kz.runtime.dayardiyev.filmorate.exception.UserValidateException;
 import kz.runtime.dayardiyev.filmorate.model.User;
-import kz.runtime.dayardiyev.filmorate.storage.InMemoryUserStorage;
-import org.springframework.beans.factory.annotation.Autowired;
+import kz.runtime.dayardiyev.filmorate.storage.FriendStorage;
+import kz.runtime.dayardiyev.filmorate.storage.UserStorage;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Service
-public class UserService extends AbstractService<User, InMemoryUserStorage> {
+@RequiredArgsConstructor
+public class UserService {
 
-    @Autowired
-    public UserService(InMemoryUserStorage storage) {
-        super(storage);
+    private final UserStorage storage;
+    private final FriendStorage friendStorage;
+
+    public User findById(int id) {
+        return storage.findById(id).orElseThrow(() -> new NotFoundByIdException("Пользователь с id=" + id + " не найден!"));
     }
 
-    @Override
+    public List<User> findAll() {
+        return storage.findAll();
+    }
+
+    public User create(User user) {
+
+        return storage.create(validate(user));
+    }
+
+    public User update(User user) {
+        return storage.update(validate(user));
+    }
+
+    public void addFriend(int id, int otherId){
+        findById(id);
+        findById(otherId);
+        friendStorage.addFriend(id, otherId);
+    }
+
+    public void removeFriend(int id, int otherId){
+        findById(id);
+        findById(otherId);
+        friendStorage.removeFriend(id, otherId);
+
+    }
+
+    public List<User> getAllFriends(int id){
+        return friendStorage.findAllFriends(id);
+    }
+
+    public List<User> getAllCommonFriends(int id, int otherId) {
+        return friendStorage.findAllCommonFriends(id, otherId);
+    }
+
     public User validate(User user) {
         validateEmail(user);
         validateLogin(user);
         validateName(user);
         validateBirthday(user);
         return user;
-    }
-
-    public void addFriend(long id, long friendId) {
-        if (storage.contains(id) && storage.contains(friendId)) {
-            storage.addFriend(id, friendId);
-            return;
-        }
-        throw new NotFoundByIdException("Пользователь не найден");
-    }
-
-    public void deleteFriend(long id, long friendId) {
-        if (storage.contains(id) && storage.contains(friendId)) {
-            storage.deleteFriend(id, friendId);
-            return;
-        }
-        throw new NotFoundByIdException("Пользователь не найден");
-    }
-
-    public List<User> getFriends(long id) {
-        return storage.getFriends(id);
-    }
-
-    public List<User> getCommonFriends(long id, long friendId) {
-        return storage.getCommonFriends(id, friendId);
     }
 
     private void validateEmail(User user) {

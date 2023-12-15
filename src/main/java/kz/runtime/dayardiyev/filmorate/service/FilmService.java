@@ -1,51 +1,69 @@
 package kz.runtime.dayardiyev.filmorate.service;
 
+import kz.runtime.dayardiyev.filmorate.dao.MpaDbStorage;
 import kz.runtime.dayardiyev.filmorate.exception.FilmValidateException;
 import kz.runtime.dayardiyev.filmorate.exception.NotFoundByIdException;
 import kz.runtime.dayardiyev.filmorate.model.Film;
-import kz.runtime.dayardiyev.filmorate.storage.InMemoryFilmStorage;
-import kz.runtime.dayardiyev.filmorate.storage.InMemoryUserStorage;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import kz.runtime.dayardiyev.filmorate.model.Mpa;
+import kz.runtime.dayardiyev.filmorate.storage.FilmStorage;
+import kz.runtime.dayardiyev.filmorate.storage.LikeStorage;
+import kz.runtime.dayardiyev.filmorate.storage.UserStorage;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 
 
-@Slf4j
 @Service
-public class FilmService extends AbstractService<Film, InMemoryFilmStorage> {
+@RequiredArgsConstructor
+public class FilmService {
 
-    private final InMemoryUserStorage userStorage;
+    private final FilmStorage filmStorage;
+    private final MpaDbStorage mpaStorage;
+    private final LikeStorage likeStorage;
+    private final UserStorage userStorage;
 
-    @Autowired
-    public FilmService(InMemoryFilmStorage storage, InMemoryUserStorage userStorage) {
-        super(storage);
-        this.userStorage = userStorage;
+    public Film create(Film film) {
+        return filmStorage.create(validate(film));
     }
 
-    public void addLike(long id, long userId) {
-        if (userStorage.contains(userId)) {
-            storage.addLike(id, userId);
-        } else {
-            throw new NotFoundByIdException("");
-        }
+    public Film update(Film film) {
+        return filmStorage.update(validate(film));
     }
 
-    public void removeLike(long id, long userId) {
-        if (storage.contains(id) && userStorage.contains(id)) {
-            storage.removeLike(id, userId);
-            return;
-        }
-        throw new NotFoundByIdException("Сущность не найден по id");
+    public Film findById(int id) {
+        return filmStorage.findById(id).orElseThrow(() -> new NotFoundByIdException("Фильм с id =" + id + " не найден"));
     }
 
-    public Set<Film> getFilmsByCount(Integer count) {
-        return storage.getFilmsByCount(count);
+    public List<Film> findAll() {
+        return filmStorage.findAll();
     }
 
-    @Override
+    public List<Film> findAllPopular(int count) {
+        return filmStorage.findAllPopular(count);
+    }
+
+    public void addLike(int id, int userId){
+        findById(id);
+        userStorage.findById(userId);
+        likeStorage.addLike(id, userId);
+    }
+
+    public void removeLike(int id, int userId){
+        findById(id);
+        userStorage.findById(userId);
+        likeStorage.removeLike(id, userId);
+    }
+
+    public List<Mpa> findAllMpa() {
+        return mpaStorage.findAll();
+    }
+
+    public Mpa findMpaById(int id) {
+        return mpaStorage.findById(id).orElseThrow(() -> new NotFoundByIdException("MPA рейтинг с id =" + id + " не найден"));
+    }
+
     public Film validate(Film film) {
         validateName(film);
         validateDescription(film);
@@ -80,5 +98,4 @@ public class FilmService extends AbstractService<Film, InMemoryFilmStorage> {
             throw new FilmValidateException("Продолжительность фильма не может быть отрицательной");
         }
     }
-
 }

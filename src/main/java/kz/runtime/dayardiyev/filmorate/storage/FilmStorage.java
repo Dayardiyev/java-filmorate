@@ -3,12 +3,12 @@ package kz.runtime.dayardiyev.filmorate.storage;
 
 import kz.runtime.dayardiyev.filmorate.model.Film;
 
-import java.util.Set;
+import java.util.List;
 
 public interface FilmStorage extends Storage<Film> {
-    void addLike(long id, long userId);
+    Film create(Film film);
 
-    void removeLike(long id, long userId);
+    Film update(Film film);
 
-    Set<Film> getFilmsByCount(Integer count);
+    List<Film> findAllPopular(int count);
 }
