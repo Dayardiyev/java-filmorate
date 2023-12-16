@@ -22,7 +22,7 @@ public class Film {
         return this;
     }
 
-    public void addAllGenres(Set<Genre> genres){
+    public void addAllGenres(Set<Genre> genres) {
         this.genres.addAll(genres);
     }
 }
