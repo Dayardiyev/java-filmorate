@@ -6,6 +6,7 @@ import kz.runtime.dayardiyev.filmorate.model.Film;
 import kz.runtime.dayardiyev.filmorate.model.Mpa;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -46,8 +47,9 @@ public class FilmControllerTest {
     public void createFilmTestWrongName() {
         filmToTest.setName(" ");
 
-        FilmValidateException e = assertThrows(FilmValidateException.class, () -> controller.create(filmToTest));
+        Executable executable = () -> controller.create(filmToTest);
 
+        FilmValidateException e = assertThrows(FilmValidateException.class, executable);
         assertEquals("Название фильма не должно быть пустым!", e.getMessage());
     }
 
@@ -55,8 +57,9 @@ public class FilmControllerTest {
     public void createFilmTestWrongDescription() {
         filmToTest.setDescription("*".repeat(203));
 
-        FilmValidateException e = assertThrows(FilmValidateException.class, () -> controller.create(filmToTest));
+        Executable executable = () -> controller.create(filmToTest);
 
+        FilmValidateException e = assertThrows(FilmValidateException.class, executable);
         assertEquals("Максимальное количество символов для описания фильма: 200\n" + "Количество символов в вашем описании: " + filmToTest.getDescription().length(), e.getMessage());
     }
 
@@ -64,8 +67,9 @@ public class FilmControllerTest {
     public void createFilmTestWrongReleaseDate() {
         filmToTest.setReleaseDate(LocalDate.of(1895, 12, 27));
 
-        FilmValidateException e = assertThrows(FilmValidateException.class, () -> controller.create(filmToTest));
+        Executable executable = () -> controller.create(filmToTest);
 
+        FilmValidateException e = assertThrows(FilmValidateException.class, executable);
         assertEquals("Дата релиза фильма не должна быть раньше 28 декабря 1895 года\n" + "Ваша дата: " + filmToTest.getReleaseDate(), e.getMessage());
     }
 
@@ -73,8 +77,9 @@ public class FilmControllerTest {
     public void createFilmTestWrongDuration() {
         filmToTest.setDuration(-1);
 
-        FilmValidateException e = assertThrows(FilmValidateException.class, () -> controller.create(filmToTest));
+        Executable executable = () -> controller.create(filmToTest);
 
+        FilmValidateException e = assertThrows(FilmValidateException.class, executable);
         assertEquals("Продолжительность фильма не может быть отрицательной", e.getMessage());
     }
 }

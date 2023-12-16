@@ -4,6 +4,7 @@ import kz.runtime.dayardiyev.filmorate.exception.UserValidateException;
 import kz.runtime.dayardiyev.filmorate.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -43,8 +44,9 @@ public class UserControllerTest {
     public void createUserTestWrongEmail() {
         userToTest.setEmail("");
 
-        UserValidateException e = assertThrows(UserValidateException.class, () -> userController.create(userToTest));
+        Executable executable = () -> userController.create(userToTest);
 
+        UserValidateException e = assertThrows(UserValidateException.class, executable);
         assertEquals("Электронная почта не может быть пустой и должна содержать символ @", e.getMessage());
     }
 
@@ -52,8 +54,9 @@ public class UserControllerTest {
     public void createUserTestWrongLogin() {
         userToTest.setLogin("admin 1234");
 
-        UserValidateException e = assertThrows(UserValidateException.class, () -> userController.create(userToTest));
+        Executable executable = () -> userController.create(userToTest);
 
+        UserValidateException e = assertThrows(UserValidateException.class, executable);
         assertEquals("Логин не может быть пустым и содержать пробелы", e.getMessage());
     }
 
@@ -62,8 +65,9 @@ public class UserControllerTest {
     public void createUserTestWrongBirthday() {
         userToTest.setBirthday(LocalDate.now().plusDays(100));
 
-        UserValidateException e = assertThrows(UserValidateException.class, () -> userController.create(userToTest));
+        Executable executable = () -> userController.create(userToTest);
 
+        UserValidateException e = assertThrows(UserValidateException.class, executable);
         assertEquals("Дата рождения не может быть в будущем", e.getMessage());
     }
 }
