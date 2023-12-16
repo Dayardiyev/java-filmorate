@@ -1,6 +1,8 @@
 package kz.runtime.dayardiyev.filmorate.service;
 
-import kz.runtime.dayardiyev.filmorate.dao.MpaDbStorage;
+import kz.runtime.dayardiyev.filmorate.model.Genre;
+import kz.runtime.dayardiyev.filmorate.storage.GenreStorage;
+import kz.runtime.dayardiyev.filmorate.storage.impl.MpaDbStorage;
 import kz.runtime.dayardiyev.filmorate.exception.FilmValidateException;
 import kz.runtime.dayardiyev.filmorate.exception.NotFoundByIdException;
 import kz.runtime.dayardiyev.filmorate.model.Film;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 
 @Service
@@ -23,6 +26,7 @@ public class FilmService {
     private final MpaDbStorage mpaStorage;
     private final LikeStorage likeStorage;
     private final UserStorage userStorage;
+    private final GenreStorage genreStorage;
 
     public Film create(Film film) {
         return filmStorage.create(validate(film));
@@ -33,15 +37,23 @@ public class FilmService {
     }
 
     public Film findById(int id) {
-        return filmStorage.findById(id).orElseThrow(() -> new NotFoundByIdException("Фильм с id =" + id + " не найден"));
+        Film film = filmStorage.findById(id).orElseThrow(() -> new NotFoundByIdException("Фильм с id = " + id + " не найден"));
+        addGenres(film);
+        return film;
     }
+
 
     public List<Film> findAll() {
-        return filmStorage.findAll();
+        List<Film> films = filmStorage.findAll();
+        films.forEach(this::addGenres);
+        return films;
     }
 
+
     public List<Film> findAllPopular(int count) {
-        return filmStorage.findAllPopular(count);
+        List<Film> films = filmStorage.findAllPopular(count);
+        films.forEach(this::addGenres);
+        return films;
     }
 
     public void addLike(int id, int userId) {
@@ -96,6 +108,13 @@ public class FilmService {
     private void validateDuration(Film film) {
         if (film.getDuration() < 0) {
             throw new FilmValidateException("Продолжительность фильма не может быть отрицательной");
+        }
+    }
+
+    private void addGenres(Film film) {
+        Set<Genre> genres = genreStorage.findAllGenresByFilm(film.getId());
+        if (genres != null) {
+            film.addAllGenres(genres);
         }
     }
 }

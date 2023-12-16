@@ -47,11 +47,11 @@ public class UserService {
 
     }
 
-    public List<User> getAllFriends(int id) {
+    public List<User> findAllFriends(int id) {
         return friendStorage.findAllFriends(id);
     }
 
-    public List<User> getAllCommonFriends(int id, int otherId) {
+    public List<User> findAllCommonFriends(int id, int otherId) {
         return friendStorage.findAllCommonFriends(id, otherId);
     }
 

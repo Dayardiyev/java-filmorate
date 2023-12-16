@@ -21,4 +21,8 @@ public class Film {
         this.id = id;
         return this;
     }
+
+    public void addAllGenres(Set<Genre> genres){
+        this.genres.addAll(genres);
+    }
 }

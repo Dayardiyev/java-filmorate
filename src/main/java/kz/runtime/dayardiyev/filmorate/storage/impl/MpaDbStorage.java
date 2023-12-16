@@ -1,4 +1,4 @@
-package kz.runtime.dayardiyev.filmorate.dao;
+package kz.runtime.dayardiyev.filmorate.storage.impl;
 
 import kz.runtime.dayardiyev.filmorate.model.Mpa;
 import kz.runtime.dayardiyev.filmorate.storage.MpaStorage;

@@ -1,10 +1,10 @@
-DROP TABLE IF EXISTS users CASCADE;
-DROP TABLE IF EXISTS user_friends CASCADE;
-DROP TABLE IF EXISTS genres CASCADE;
-DROP TABLE IF EXISTS rating_mpa CASCADE;
-DROP TABLE IF EXISTS films CASCADE;
-DROP TABLE IF EXISTS likes CASCADE;
-DROP TABLE IF EXISTS films_genres CASCADE;
+drop table if exists users cascade;
+drop table if exists user_friends cascade;
+drop table if exists genres cascade;
+drop table if exists rating_mpa cascade;
+drop table if exists films cascade;
+drop table if exists likes cascade;
+drop table if exists films_genres cascade;
 
 create table if not exists rating_mpa
 (

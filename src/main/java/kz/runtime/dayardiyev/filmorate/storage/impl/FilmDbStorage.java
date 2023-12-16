@@ -1,4 +1,4 @@
-package kz.runtime.dayardiyev.filmorate.dao;
+package kz.runtime.dayardiyev.filmorate.storage.impl;
 
 
 import kz.runtime.dayardiyev.filmorate.exception.NotFoundByIdException;
@@ -6,16 +6,12 @@ import kz.runtime.dayardiyev.filmorate.model.Film;
 import kz.runtime.dayardiyev.filmorate.model.Mpa;
 import kz.runtime.dayardiyev.filmorate.model.Genre;
 import kz.runtime.dayardiyev.filmorate.storage.FilmStorage;
-import kz.runtime.dayardiyev.filmorate.storage.GenreStorage;
 import lombok.RequiredArgsConstructor;
-import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -25,8 +21,6 @@ import java.util.Set;
 @Repository
 public class FilmDbStorage implements FilmStorage {
     private final JdbcTemplate jdbcTemplate;
-
-    private final GenreStorage genreStorage;
 
     private static final String SELECT_FILMS =
             "select f.id, f.name, f.description, f.release_date, f.duration, " +
@@ -67,28 +61,20 @@ public class FilmDbStorage implements FilmStorage {
                 "group by f.id " +
                 "order by count(likes.film_id) desc " +
                 "limit ?";
-        List<Film> films = jdbcTemplate.query(SELECT_FILMS + sql, rowMapper(), count);
-        genreStorage.findAllGenresByFilm(films);
-        return films;
+        return jdbcTemplate.query(SELECT_FILMS + sql, rowMapper(), count);
     }
 
     @Override
     public Optional<Film> findById(int id) {
         String sql = "where f.id = ?";
         Film film = jdbcTemplate.queryForObject(SELECT_FILMS + sql, rowMapper(), id);
-        if (film == null) {
-            throw new NotFoundByIdException("Фильм с id =" + id + " не найден");
-        }
-        genreStorage.findAllGenresByFilm(List.of(film));
-        return Optional.of(film);
+        return Optional.ofNullable(film);
     }
 
 
     @Override
     public List<Film> findAll() {
-        List<Film> films = jdbcTemplate.query(SELECT_FILMS, rowMapper());
-        genreStorage.findAllGenresByFilm(films);
-        return films;
+        return jdbcTemplate.query(SELECT_FILMS, rowMapper());
     }
 
 
@@ -114,22 +100,13 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     private void updateGenres(Set<Genre> genres, int id) {
-        jdbcTemplate.update("DELETE FROM films_genres WHERE film_id = ?", id);
+        jdbcTemplate.update("delete from films_genres where film_id = ?", id);
         if (genres != null && !genres.isEmpty()) {
-            String sql = "INSERT INTO films_genres (film_id, genre_id) VALUES (?, ?)";
-            Genre[] g = genres.toArray(new Genre[genres.size()]);
-            jdbcTemplate.batchUpdate(
-                    sql,
-                    new BatchPreparedStatementSetter() {
-                        @Override
-                        public void setValues(PreparedStatement ps, int i) throws SQLException {
-                            ps.setInt(1, id);
-                            ps.setInt(2, g[i].getId());
-                        }
-
-                        public int getBatchSize() {
-                            return genres.size();
-                        }
+            String sql = "insert into films_genres (film_id, genre_id) values (?, ?)";
+            jdbcTemplate.batchUpdate(sql, genres, genres.size(),
+                    (ps, genre) -> {
+                        ps.setInt(1, id);
+                        ps.setInt(2, genre.getId());
                     });
         }
     }

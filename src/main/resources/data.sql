@@ -1,4 +1,4 @@
-delete  from films_genres;
+delete from films_genres;
 delete from likes;
 delete from user_friends;
 delete from films;

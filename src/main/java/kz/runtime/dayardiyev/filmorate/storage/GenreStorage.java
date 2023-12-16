@@ -1,10 +1,9 @@
 package kz.runtime.dayardiyev.filmorate.storage;
 
-import kz.runtime.dayardiyev.filmorate.model.Film;
 import kz.runtime.dayardiyev.filmorate.model.Genre;
 
-import java.util.List;
+import java.util.Set;
 
 public interface GenreStorage extends Storage<Genre> {
-    void findAllGenresByFilm(List<Film> films);
+    Set<Genre> findAllGenresByFilm(int id);
 }
