@@ -1,9 +1,10 @@
 package kz.runtime.dayardiyev.filmorate.storage;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface Storage<T> {
-    T save(T entity);
+    Optional<T> findById(int id);
 
     List<T> findAll();
 }

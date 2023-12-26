@@ -1,7 +1,7 @@
 # java-filmorate
 #### Платформа для оценки фильмов пользователями
 
-<img width="960" alt="Screenshot 2023-11-30 at 14 33 19" src="https://github.com/Dayardiyev/java-filmorate/assets/92905923/840a294a-87bc-4960-ab1c-96917fcb5bb4">
+![](filmorate.png)
 
 <br>
 

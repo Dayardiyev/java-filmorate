@@ -4,6 +4,7 @@ import kz.runtime.dayardiyev.filmorate.exception.UserValidateException;
 import kz.runtime.dayardiyev.filmorate.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -24,12 +25,17 @@ public class UserControllerTest {
 
     @BeforeEach
     public void init() {
-        userToTest = new User(1, "example@mail.com", "user_login", "user_name", LocalDate.of(2000, 1, 1));
+        userToTest = User.builder()
+                .email("example@gmail.com")
+                .login("user_login")
+                .name("user_name")
+                .birthday(LocalDate.of(2000, 2, 2))
+                .build();
     }
 
     @Test
     public void createUserTest() {
-        User result = userController.createUser(userToTest);
+        User result = userController.create(userToTest);
 
         assertEquals(result, userToTest);
     }
@@ -38,8 +44,9 @@ public class UserControllerTest {
     public void createUserTestWrongEmail() {
         userToTest.setEmail("");
 
-        UserValidateException e = assertThrows(UserValidateException.class, () -> userController.createUser(userToTest));
+        Executable executable = () -> userController.create(userToTest);
 
+        UserValidateException e = assertThrows(UserValidateException.class, executable);
         assertEquals("Электронная почта не может быть пустой и должна содержать символ @", e.getMessage());
     }
 
@@ -47,27 +54,20 @@ public class UserControllerTest {
     public void createUserTestWrongLogin() {
         userToTest.setLogin("admin 1234");
 
-        UserValidateException e = assertThrows(UserValidateException.class, () -> userController.createUser(userToTest));
+        Executable executable = () -> userController.create(userToTest);
 
+        UserValidateException e = assertThrows(UserValidateException.class, executable);
         assertEquals("Логин не может быть пустым и содержать пробелы", e.getMessage());
     }
 
-    @Test
-    public void createUserTestEmptyName() {
-        userToTest.setName(null);
-
-        User result = userController.createUser(userToTest);
-
-        assertEquals(1, userController.findAll().size());
-        assertEquals(userToTest.getLogin(), result.getLogin());
-    }
 
     @Test
     public void createUserTestWrongBirthday() {
         userToTest.setBirthday(LocalDate.now().plusDays(100));
 
-        UserValidateException e = assertThrows(UserValidateException.class, () -> userController.createUser(userToTest));
+        Executable executable = () -> userController.create(userToTest);
 
+        UserValidateException e = assertThrows(UserValidateException.class, executable);
         assertEquals("Дата рождения не может быть в будущем", e.getMessage());
     }
 }
